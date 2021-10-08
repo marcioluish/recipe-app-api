@@ -1,0 +1,15 @@
+version: '3.0'
+
+services:
+  recipe_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./app:/app
+    # the first command will run the django development server available
+    # (cont) on all ip addresses that run on the dock container
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
