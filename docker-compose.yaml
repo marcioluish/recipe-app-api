@@ -2,14 +2,44 @@ version: '3.0'
 
 services:
   recipe_app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    container_name: recipe_app
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    image: rcp:latest
     ports:
       - '8000:8000'
     volumes:
       - ./app:/app
-    # the first command will run the django development server available
-    # (cont) on all ip addresses that run on the dock container
+    # runserver 0.0.0.0:8000 will run the django development server
+    # (cont) available on all ip addresses that run on the dock container
+    
+    # When you load the project, Django identifies "commands" by looking
+    # (cont) in all "management/commands" folders for each registered app,
+    # (cont) adding all modules (.py files) it finds to a list.
+    # By runnning "python manage.py wait_for_db", the manage.py module
+    # (cont) will look through that list and see if its elements matches
+    # (cont) files in project's tree. In our case it would find, for example
+    # (cont) the "wait_for_db.py" file and load that.
+    # Once the file is loaded, manage.py will look into each "handle()" method
+    # (cont) of each file, and call it while passing in any additional
+    # (cont) argument
     command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
+      sh -c "python manage.py wait_for_db &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=app
+      - DB_USER=postgres
+      - DB_PASS=supersecretpassword
+    depends_on:
+      - db
+
+  db:
+    container_name: recipe_db
+    image: postgres:10-alpine
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=supersecretpassword
