@@ -1,19 +1,19 @@
-version: '3.0'
+version: "3.0"
 
 services:
   recipe_app:
     container_name: recipe_app
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
-    image: rcp:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # image: rcp:latest
     ports:
-      - '8000:8000'
+      - "8000:8000"
     volumes:
       - ./app:/app
     # runserver 0.0.0.0:8000 will run the django development server
     # (cont) available on all ip addresses that run on the dock container
-    
+
     # When you load the project, Django identifies "commands" by looking
     # (cont) in all "management/commands" folders for each registered app,
     # (cont) adding all modules (.py files) it finds to a list.
