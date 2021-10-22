@@ -13,13 +13,39 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'password': {
                 'write_only': True,
-                'min_length': 5
+                'min_length': 5,
+                'style': {
+                    'input_type': 'password'
+                }
             }
         }
 
     def create(self, validated_data):
         """Create a new user with encrypted password and return it"""
         return get_user_model().objects.create_user(**validated_data)
+
+    def update(self, instance, validated_data):
+        """Update a user, setting the password correctly and return it"""
+
+        """
+        The "pop()" function on the dictionary is used to retrieve the value
+        of a key while simultaneously removing the key from the dictionary.
+        The purpose of overriding the "update()" function is to prevent the
+        password being passed in as plain text, and instead, set it using the
+        "set_password()" function so it gets encrypted. So what we do, is we
+        use "pop()" to "pop" it out of the dictionary into a variable called
+        password, and then pass the rest of the dictionary (excluding the
+        password) through into the original "update()" function. Then we set
+        the password using "set_password()".
+        """
+        password = validated_data.pop('password', None)
+        user = super().update(instance, validated_data)
+
+        if password:
+            user.set_password(password)
+            user.save()
+
+        return user
 
 
 class AuthTokenSerializer(serializers.Serializer):
