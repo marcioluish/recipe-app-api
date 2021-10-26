@@ -2,6 +2,16 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 
 
+from core import models
+
+
+def sample_user():
+    """Create a sample user"""
+    email = 'test@test.com'
+    password = 'tests'
+    return get_user_model().objects.create_user(email, password)
+
+
 class ModelTests(TestCase):
 
     def test_create_user_with_email_successful(self):
@@ -45,3 +55,12 @@ class ModelTests(TestCase):
         self.assertTrue(user.is_staff)
         # is_superuser é uma flag incluída em PermissionsMixin
         self.assertTrue(user.is_superuser)
+
+    def test_tag_str(self):
+        """Test the tag string representation"""
+        tag = models.Tag.objects.create(
+            user=sample_user(),
+            name='Vegan'
+        )
+
+        self.assertEqual(str(tag), tag.name)
