@@ -3,10 +3,10 @@ version: "3.0"
 services:
   recipe_app:
     container_name: recipe_app
+    image: recipe
     build:
       context: .
       dockerfile: Dockerfile
-    # image: rcp:latest
     ports:
       - "8000:8000"
     volumes:
