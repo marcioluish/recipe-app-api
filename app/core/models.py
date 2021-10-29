@@ -76,3 +76,24 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Recipe(models.Model):
+    """Recipe object"""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    title = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=5, decimal_places=2)
+    time_minutes = models.IntegerField()
+    # 'blank=True' sets the 'link' field automatically to a blank string
+    # when it's not provided by the user. Doing this, if we wanna check
+    # if the link is set, we'd only check if it's blank or not, not needing
+    # to check if it's 'Null/None'.
+    link = models.CharField(max_length=255, blank=True)
+    ingrediets = models.ManyToManyField('Ingredient')
+    tags = models.ManyToManyField('Tag')
+
+    def __str__(self):
+        return self.title
