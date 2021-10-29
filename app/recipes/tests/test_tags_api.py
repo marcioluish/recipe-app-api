@@ -44,7 +44,7 @@ class PrivateTagsApiTests(TestCase):
         res = self.client.get(TAGS_URL)
 
         # Ensures that all tags are returned in alphabetical order.
-        tags = Tag.objects.all().order_by('name')
+        tags = Tag.objects.all().order_by('-name')
         # 'many=True' used because more than one tag can be retrieved.
         serializer = TagSerializer(tags, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
