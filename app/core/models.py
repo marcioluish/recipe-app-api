@@ -92,7 +92,7 @@ class Recipe(models.Model):
     # if the link is set, we'd only check if it's blank or not, not needing
     # to check if it's 'Null/None'.
     link = models.CharField(max_length=255, blank=True)
-    ingrediets = models.ManyToManyField('Ingredient')
+    ingredients = models.ManyToManyField('Ingredient')
     tags = models.ManyToManyField('Tag')
 
     def __str__(self):
