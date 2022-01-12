@@ -12,15 +12,17 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write('Waiting for database...')
-        db_conn = None
-        while not db_conn:
+        db_up = False
+        while not db_up:
             try:
                 # connections['default'] returns the connection status to
                 # (cont)the default database.
                 # Default database is set in settings.py file
-                db_conn = connections['default']
-            except (OperationalError, Psycopyg2OpError):
+                connections['default'].cursor().execute('SELECT 1')
+                db_up = True
+            except OperationalError:
                 self.stdout.write('Database unavailable, waiting 1 second...')
                 time.sleep(1)
-
+    
         self.stdout.write(self.style.SUCCESS('Database available!'))
+    
